@@ -1,6 +1,7 @@
 import z from "zod";
 import User from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
+import { errorHandler } from "../utils/errorHandler.js";
 
 const signupSchema = z.object({
   username: z.string().min(3),
@@ -8,7 +9,7 @@ const signupSchema = z.object({
   password: z.string().min(5),
 });
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
 
   //zod checks
   const { success } = signupSchema.safeParse(req.body);
@@ -27,11 +28,12 @@ const signup = async (req, res) => {
   const existingUserWithEmail = await User.findOne({ email: email });
 
   if (existingUserWithEmail) { 
-    res.status(411).json({message: "a user already exists with that email, login instead"})
+    return next(errorHandler("a user already exists with that email, login instead"));
   }
 
   if (existingUserWithUsername) {
-    res.status(411).json({message: "username taken"})
+    res.status(411).json({message: "username taken"});
+    //dont know if i should create an error for this case...
   }
   
   //hashing password with bcryptjs
@@ -49,9 +51,9 @@ const signup = async (req, res) => {
     res.json({message: "Signup successful!"});
   }
   catch (error) {
-    res.status(500).json({message: error.message});
+    next(error);
   }
-  
+
 };
 
 export default signup;
