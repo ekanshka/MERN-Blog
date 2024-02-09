@@ -16,7 +16,7 @@ const signup = async (req, res, next) => {
 
   if (!success) {
       res.status(400).json({
-          message: 'Incorrect inputs or password too small'
+          message: 'Incorrect inputs or password too small (must be 5 characters long)'
       })
   }
 

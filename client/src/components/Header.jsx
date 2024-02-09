@@ -18,7 +18,7 @@ export default function Header() {
         to="/"
         className="self-center whitespace-nowrap text-md sm:text-2xl font-semibold dark:text-white"
       >
-        <span className="px-3 py-1 bg-gradient-to-r from-blue-950  via-purple-700 to-pink-500 rounded-lg text-white">
+        <span className="px-3 py-1 main-bg-gradient rounded-lg text-white">
           Jaya's
         </span>
         Blog
