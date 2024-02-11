@@ -15,9 +15,11 @@ const signup = async (req, res, next) => {
   const { success } = signupSchema.safeParse(req.body);
 
   if (!success) {
-      res.status(400).json({
-          message: 'Incorrect inputs or password too small (must be 5 characters long)'
-      })
+    
+      return next(errorHandler("Password is too small or incorrect inputs"))  // CAN NOT STRESS THIS FACT ENOUGH PLEASE RETURN ERRORS THROUGH ERROR HANDLER AND A STATUS CODE IS SO IMPORTANT TO FIND OUT BUGS WTF
+      // res.status(400).json({
+      //     message: 'Incorrect inputs or password too small (must be 5 characters long)'
+      // })
   }
 
   //destructuring
@@ -32,7 +34,8 @@ const signup = async (req, res, next) => {
   }
 
   if (existingUserWithUsername) {
-    res.status(411).json({message: "username taken"});
+    return next(errorHandler("username taken"));
+    // res.status(411).json({message: "username taken"});
     //dont know if i should create an error for this case...
   }
   

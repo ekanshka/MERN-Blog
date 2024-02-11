@@ -1,15 +1,65 @@
-import { Button, Label, TextInput } from "flowbite-react";
-import React from "react";
-import { Link } from "react-router-dom";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-  function handleSubmit(e) {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const handleChange = (e) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [e.target.id]: e.target.value.trim(),
+    }));
+  };
+
+  // console.log(formData)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  }
+    // console.log(formData);
+    //simpler check for empty fields... wont require/send backend request
+    // if (!formData.username || !formData.email || !formData.password) {
+    //   return setErrorMessage('Please fill out all fields.');
+    // }
+
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      //very important to start loading back to false so the user can retry...
+      setLoading(false);
+      
+      //when the data is wrong/backend checks the input as wrong
+      if (data.success === false) {
+        return setErrorMessage(data.message);
+      }
+
+      if (res.ok) {
+        navigate("/sign-in");
+      }
+
+    } catch (error) {
+      //when there's client side error(no internet)/api error/fetch error/backend error
+      setLoading(false);
+      setErrorMessage(error.message); //notice no return here.
+    }
+  };
 
   return (
-    <>
-      <div className="min-h-screen flex flex-col md:flex-row place-items-center justify-center gap-12 md:gap-32">
+    <div className="min-h-svh mt-48">
+      <div className="flex flex-col md:flex-row place-items-center justify-center gap-12 md:gap-32">
         {/* left-part */}
         <div className="flex flex-col gap-5 md:gap-10">
           <Link
@@ -30,28 +80,34 @@ export default function SignUp() {
         <div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <Label>Your Username</Label>
+              <Label value="Your username" />
               <TextInput
-                className="w-72"
+                className="w-80"
                 type="text"
                 placeholder="name"
-              ></TextInput>
+                id="username"
+                onChange={handleChange}
+              />
             </div>
             <div>
-              <Label>Your Email</Label>
+              <Label value="Your email" />
               <TextInput
-                className="w-72"
+                className="w-80"
                 type="email"
                 placeholder="email@gmail.com"
-              ></TextInput>
+                id="email"
+                onChange={handleChange}
+              />
             </div>
             <div>
-              <Label>Your Password</Label>
+              <Label value="Your password" />
               <TextInput
-                className="w-72"
+                className="w-80"
                 type="text"
                 placeholder="password"
-              ></TextInput>
+                id="password"
+                onChange={handleChange}
+              />
             </div>
 
             {/* <Button
@@ -61,18 +117,34 @@ export default function SignUp() {
               Sign Up
             </Button> */}
             <Button
-              gradientDuoTone='purpleToPink'
-              className="w-72 mt-5 from text-white"
-              color=""
+              gradientDuoTone="purpleToPink"
+              className="w-80 mt-5"
+              type="submit"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </form>
           <div className="info mt-5 dark:text-white">
-            Already have an account? <Link to="/sign-in" className="text-teal-500 font-semibold">Sign In</Link>
+            Already have an account?{" "}
+            <Link to="/sign-in" className="text-blue-500">
+              Sign In
+            </Link>
           </div>
+          {errorMessage && (
+            <Alert className="mt-5 w-80" color="failure">
+              {errorMessage}
+            </Alert>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

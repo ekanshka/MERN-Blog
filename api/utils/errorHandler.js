@@ -12,5 +12,5 @@
 
 export const errorHandler = (message) => {
     const error = new Error(message);       //does not support status code
-    throw error;
+    return error;       //return the error anywhere please dont throw error!!! it breaks the server!
 }
