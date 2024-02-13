@@ -14,6 +14,7 @@ export default function App() {
     <BrowserRouter>
       <Header />
       <Routes>
+        {/* notice the paths are react url paths and not the api route path names. ex- sign-up/signup or sign-in/signin*/}
         <Route path="/" element={<Home />}></Route>
         <Route path="/about" element={<About />}></Route>
         <Route path="/sign-in" element={<SignIn />}></Route>

@@ -86,7 +86,7 @@ export const signin = async (req, res, next) => {
 
     if (!validUser) {
       return next(
-        errorHandler("No User found")
+        errorHandler("No user found")
       );
     }
 
@@ -100,6 +100,7 @@ export const signin = async (req, res, next) => {
       )
     }
 
+    // @ts-ignore
     const {password: whateverPassword, ...rest} = validUser._doc;    //notice the way of excluding the password from the object
 
     //signing jwt token with user id and jwt_secret to send
