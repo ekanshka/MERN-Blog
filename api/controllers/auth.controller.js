@@ -74,7 +74,7 @@ export const signin = async (req, res, next) => {
 
   if (!success) {
     //error 400
-    return next(errorHandler("Password is too small or incorrect inputs")); // CAN NOT STRESS THIS FACT ENOUGH PLEASE RETURN ERRORS THROUGH ERROR HANDLER AND A STATUS CODE IS SO IMPORTANT TO FIND OUT BUGS WTF
+    return next(errorHandler("Incorrect inputs")); // CAN NOT STRESS THIS FACT ENOUGH PLEASE RETURN ERRORS THROUGH ERROR HANDLER AND A STATUS CODE IS SO IMPORTANT TO FIND OUT BUGS WTF
   }
 
   try {
